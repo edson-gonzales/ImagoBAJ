@@ -8,20 +8,38 @@ import java.awt.*;
  */
 public class RightPanelViewer extends JPanel {
 
-    private JPanel leftPanelViewer;
-    public RightPanelViewer(String title)
-    {
+    private ImageIcon imageIcon;
+    private JLabel jImage;
+    private JPanel rigthPanelViewer;
 
-        setBackground(Color.RED);
-
-    }
-    public void initCOmponents()
-    {
-        leftPanelViewer= new JPanel();
-    }
-    public void addComponents()
-    {
+    public RightPanelViewer(String title) {
+        super();
+        //setBackground(Color.RED);
+        initCOmponents();
+        addComponents();
 
     }
 
+    public void initCOmponents() {
+        imageIcon = new ImageIcon("../img/android_vs_iphone.jpg");
+        jImage = new JLabel();
+        jImage.setIcon(imageIcon);
+
+        //rigthPanelViewer = new JPanel();
+        this.setLayout(new BorderLayout());
+        this.add(jImage, BorderLayout.CENTER);
+
+        this.setVisible(true);
+    }
+
+    public void addComponents() {
+
+
+    }
+
+
+//    Image image=GenerateImage.toImage(true);  //this generates an image file
+//    ImageIcon icon = new ImageIcon(image);
+//    JLabel thumb = new JLabel();
+//    thumb.setIcon(icon);
 }

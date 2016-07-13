@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Created by Administrator on 7/5/2016.
  */
-public class ImagoMainWindow extends JFrame{
+public class ImagoMainWindow extends JFrame {
 
     private JPanel containerCenterPanel;
     private RightPanelViewer rightPanel;
@@ -22,42 +22,41 @@ public class ImagoMainWindow extends JFrame{
 
     /**
      * This is the class constructor charging methods instance and add the components
-       recive the "title" of the frame of the Main class
+     * recive the "title" of the frame of the Main class
+     *
      * @param title
      */
-    public ImagoMainWindow(String title)
-    {
+    public ImagoMainWindow(String title) {
         super(title);
         initComponents();
         addComponents();
 
     }
+
     /**
      * This method instance the UI objects
      */
 
-    public void initComponents()
-    {
+    public void initComponents() {
 
-        JMIOpen=new JMenuItem("Open File");
-        JMISave=new JMenuItem("Save File");
-        JMIExit=new JMenuItem("Exit");
+        JMIOpen = new JMenuItem("Open File");
+        JMISave = new JMenuItem("Save File");
+        JMIExit = new JMenuItem("Exit");
 
-        JMBLeftMenu= new JMenuBar();
-        JMArchivo=new JMenu("Archivo");
-        JMEdit=new JMenu("Edit");
+        JMBLeftMenu = new JMenuBar();
+        JMArchivo = new JMenu("Archivo");
+        JMEdit = new JMenu("Edit");
 
-        leftPanel= new LeftSearchPanel();
-        rightPanel=new RightPanelViewer("");
-        containerCenterPanel=new JPanel();
+        leftPanel = new LeftSearchPanel();
+        rightPanel = new RightPanelViewer("");
+        containerCenterPanel = new JPanel();
 
     }
 
     /**
      * This method adds the components to the main frame
      */
-    public void addComponents()
-    {   //Menu Item
+    public void addComponents() {   //Menu Item
         JMArchivo.add(JMIOpen);
         JMArchivo.add(JMISave);
         JMArchivo.add(JMIExit);
@@ -66,14 +65,14 @@ public class ImagoMainWindow extends JFrame{
         JMBLeftMenu.add(JMEdit);
         this.setJMenuBar(JMBLeftMenu);
 
-        containerCenterPanel.setLayout(new GridLayout(1,2));
+        containerCenterPanel.setLayout(new GridLayout(1, 2));
         containerCenterPanel.add(leftPanel);
         containerCenterPanel.add(rightPanel);
-
+        containerCenterPanel.setVisible(true);
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(containerCenterPanel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1300,800);
+        setSize(1300, 800);
     }
 }
