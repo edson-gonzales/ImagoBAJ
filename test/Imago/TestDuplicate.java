@@ -4,7 +4,9 @@ import core.Duplicate;
 import core.Folder;
 import core.Path;
 import org.junit.Test;
+
 import java.io.File;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -12,18 +14,17 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestDuplicate {
 
-
     @Test
     public void testGetStrategyNameOneImage() {
 
         Folder files = new Folder();
         String path = "test/Files/directory/otherDirectory";
         File folder = new File(path);
-        files.listFilesDirectory(folder);
+        files.listImageDirectory(folder);
         Duplicate duplicate = new Duplicate("Name", "img-sprite.png");
         duplicate.searchDuplicate(files);
 
-        assertEquals(1, duplicate.size());
+        assertEquals(1, duplicate.sizeImage());
     }
 
     @Test
@@ -32,11 +33,11 @@ public class TestDuplicate {
         Folder files = new Folder();
         String path = "test/Files/directory";
         File folder = new File(path);
-        files.listFilesDirectory(folder);
+        files.listImageDirectory(folder);
         Duplicate duplicate = new Duplicate("Name", "link.png");
         duplicate.searchDuplicate(files);
 
-        assertEquals(2, duplicate.size());
+        assertEquals(2, duplicate.sizeImage());
     }
 
     @Test
@@ -47,11 +48,11 @@ public class TestDuplicate {
         String path = newPath.getNewPath() + "test/Files";
 
         File folder = new File(path);
-        files.listFilesDirectory(folder);
-        Duplicate duplicate = new Duplicate("Size", "5519");
+        files.listImageDirectory(folder);
+        Duplicate duplicate = new Duplicate("Size", 5519);
         duplicate.searchDuplicate(files);
 
-        assertEquals(1, duplicate.size());
+        assertEquals(1, duplicate.sizeImage());
     }
 
     @Test
@@ -60,37 +61,10 @@ public class TestDuplicate {
         Folder files = new Folder();
         String path = "test/Files";
         File folder = new File(path);
-        files.listFilesDirectory(folder);
-        Duplicate duplicate = new Duplicate("Size", "422");
+        files.listImageDirectory(folder);
+        Duplicate duplicate = new Duplicate("Size", 422);
         duplicate.searchDuplicate(files);
 
-        assertEquals(2, duplicate.size());
+        assertEquals(2, duplicate.sizeImage());
     }
-
-    @Test
-    public void testGetStrategyTypePng() {
-
-        Folder files = new Folder();
-        String path = "test/Files";
-        File folder = new File(path);
-        files.listFilesDirectory(folder);
-        Duplicate duplicate = new Duplicate("Png", ".png");
-        duplicate.searchTypeDuplicate(files);
-
-        assertEquals(6, duplicate.size());
-    }
-
-    @Test
-    public void testGetStrategyTypeJpeg() {
-
-        Folder files = new Folder();
-        String path = "test/Files";
-        File folder = new File(path);
-        files.listFilesDirectory(folder);
-        Duplicate duplicate = new Duplicate("Jpeg", ".jpeg");
-        duplicate.searchTypeDuplicate(files);
-
-        assertEquals(4, duplicate.size());
-    }
-
 }

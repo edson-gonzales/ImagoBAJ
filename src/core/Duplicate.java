@@ -5,60 +5,63 @@ import java.util.ArrayList;
 import java.util.*;
 
 /**
- * Created by Administrator on 7/8/2016.
+ * This class create a list of images duplicates.
+ *
+ * @autor Bruno Vasquez
  */
-public class Duplicate
-{
-    private ArrayList<File> duplicate;
+public class Duplicate {
+    private ArrayList<File> duplicateImage;
     private ArrayList<File> litImage;
 
     private String strategy;
-    private String imput;
+    private Object imageInput;
 
-    HashMap<String, SearchStrategy> strategyAvailable;
-    public Duplicate(String strategy, String imput)
-    {
-        strategyAvailable = new HashMap<String, SearchStrategy>();
+
+    /**
+     * It is the constructor to create an list of image duplicate.
+     *
+     * @param strategy   an String to set the type strategy of search
+     * @param imageInput an Object to sets the image to compare
+     */
+    public Duplicate(String strategy, Object imageInput) {
         this.strategy = strategy;
-        this.imput = imput;
-
-        duplicate = new ArrayList<>();
+        this.imageInput = imageInput;
+        duplicateImage = new ArrayList<>();
     }
 
-    public void searchDuplicate(Folder list)
-    {
-        strategyAvailable.put("Name", new SearchName());
-        strategyAvailable.put("Size", new SearchSize());
-        SearchStrategy strategyUsed =  strategyAvailable.get(strategy);
-        litImage = list.getListFiles();
+    /**
+     * Setting a list of duplicate images
+     *
+     * @param folder an object Folder to get the Image list.
+     */
+    public void searchDuplicate(Folder folder) {
+        HashMap<String, CompareStrategy> strategyAvailable = new HashMap<String, CompareStrategy>();
+        strategyAvailable.put("Name", new CompareName());
+        strategyAvailable.put("Size", new CompareSize());
+        CompareStrategy strategyUsed = strategyAvailable.get(strategy);
+        litImage = folder.getListImageFiles();
 
         for (File image : litImage) {
-            if(strategyUsed.search(image, imput))
-             duplicate.add(image);
+            if (strategyUsed.compare(image, imageInput))
+                duplicateImage.add(image);
         }
     }
 
-    public void searchTypeDuplicate(Folder list)
-    {
-        HashMap<String, TypeStrategy> strategyTypeAvailable = new HashMap<String, TypeStrategy>();
-        strategyTypeAvailable.put("Png", new TypePng());
-        strategyTypeAvailable.put("Jpeg", new TypeJpeg());
-        strategyTypeAvailable.put("Bmp", new TypeBmp());
-        TypeStrategy strategyUsed =  strategyTypeAvailable.get(strategy);
-        litImage = list.getListFiles();
-
-        for (File image : litImage) {
-            String name = image.getName();
-            if(strategyUsed.searchType(name))
-                duplicate.add(image);
-        }
+    /**
+     * Returns the size of a Image Duplicate list.
+     *
+     * @return size Image duplicate List .
+     */
+    public int sizeImage() {
+        return duplicateImage.size();
     }
 
-    public int size() {
-        return duplicate.size();
-    }
-
-    public ArrayList getListDuplicate(){
-        return duplicate;
+    /**
+     * Returns a list of duplicate images.
+     *
+     * @return a list Image.
+     */
+    public ArrayList getListDuplicate() {
+        return duplicateImage;
     }
 }

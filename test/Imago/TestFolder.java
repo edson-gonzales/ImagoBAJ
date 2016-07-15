@@ -18,16 +18,16 @@ public class TestFolder {
         Folder files = new Folder();
         String path = "test/Files/Directory/DirectoryEmpty";
         File folder = new File(path);
-        files.listFilesDirectory(folder);
-        assertEquals(0, files.sizeFile());
+        files.listImageDirectory(folder);
+        assertEquals(0, files.sizeFileImage());
     }
 
     @Test
-    public void testGetListRecursive() {
+    public void testGetImageListDirectoryRecursive() {
         Folder files = new Folder();
         String path = "test/Files";
         File folder = new File(path);
-        files.listFilesDirectory(folder);
-        assertEquals(16, files.sizeFile());
+        files.listImageDirectory(folder);
+        assertEquals(10, files.sizeFileImage());
     }
 }
