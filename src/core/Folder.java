@@ -38,7 +38,7 @@ public class Folder {
     }
 
     /**
-     * Search of the files in a directory according to a path.
+     * List the image files within the path specified.
      *
      * @param path an object File to get the files.
      */

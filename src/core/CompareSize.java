@@ -18,9 +18,9 @@ public class CompareSize implements CompareStrategy {
     @Override
     public boolean compare(File image, Object input) {
         long sizeLong = image.length();
-        Long inputA = Long.parseLong(input.toString());
-        String sizeString = String.valueOf(sizeLong);
-        if (sizeLong == inputA) {
+        Long inputLong = Long.parseLong(input.toString());
+
+        if (sizeLong == inputLong) {
             return true;
         } else {
             return false;
