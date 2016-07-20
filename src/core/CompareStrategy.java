@@ -1,6 +1,7 @@
 package core;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * This interface compare images

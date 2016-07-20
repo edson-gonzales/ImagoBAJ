@@ -20,9 +20,7 @@ public class CompareName implements CompareStrategy {
         String name = image.getName();
         if (name.equals((String) input)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
-
 }

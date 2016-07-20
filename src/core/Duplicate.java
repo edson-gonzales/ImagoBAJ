@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class Duplicate {
     private ArrayList<File> duplicateImage;
-    private ArrayList<File> litImage;
+    private ArrayList<File> listImage;
 
     private String strategy;
     private Object imageInput;
@@ -38,10 +38,11 @@ public class Duplicate {
         HashMap<String, CompareStrategy> strategyAvailable = new HashMap<String, CompareStrategy>();
         strategyAvailable.put("Name", new CompareName());
         strategyAvailable.put("Size", new CompareSize());
-        CompareStrategy strategyUsed = strategyAvailable.get(strategy);
-        litImage = folder.getListImageFiles();
 
-        for (File image : litImage) {
+        CompareStrategy strategyUsed = strategyAvailable.get(strategy);
+        listImage = folder.getListImageFiles();
+
+        for (File image : listImage) {
             if (strategyUsed.compare(image, imageInput))
                 duplicateImage.add(image);
         }

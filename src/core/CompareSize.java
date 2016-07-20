@@ -22,8 +22,7 @@ public class CompareSize implements CompareStrategy {
 
         if (sizeLong == inputLong) {
             return true;
-        } else {
-            return false;
         }
-    }
+        return false;
+     }
 }
