@@ -38,7 +38,7 @@ public class Duplicate {
         HashMap<String, CompareStrategy> strategyAvailable = new HashMap<String, CompareStrategy>();
         strategyAvailable.put("Name", new CompareName());
         strategyAvailable.put("Size", new CompareSize());
-
+        strategyAvailable.put("Pixel", new ComparePixel());
         CompareStrategy strategyUsed = strategyAvailable.get(strategy);
         listImage = folder.getListImageFiles();
 
