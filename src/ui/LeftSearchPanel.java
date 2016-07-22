@@ -1,53 +1,63 @@
 package ui;
 
+import javax.swing.ImageIcon;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 /**
- * Created by Administrator on 7/5/2016.
+ * This class contains the elements that are in charge of loading
+ * the images as thumbnails, tools and functionality as search folder
  */
-public class LeftSearchPanel extends JPanel{
+public class LeftSearchPanel extends JPanel {
 
 
-    private JScrollPane JScrollLeftPanel;
     private Toolbar toolbar;
     private JList imagesList;
+    private JLabel label;
+    private ImageListModel imageListModel;
 
 
     /**
      * The constructor initializes the components and add the items to the frame
      */
-    public LeftSearchPanel()
-    {
+    public LeftSearchPanel() {
 
-       initComponents();
+        initComponents();
         addComponents();
     }
 
     /**
-     * starts UI components
+     *this method initialize  UI components
      */
-    public void initComponents()
-    {
+    public void initComponents() {
+
         toolbar = new Toolbar();
-        imagesList = new JList();
-        JScrollLeftPanel = new JScrollPane(imagesList);
-        imagesList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        imagesList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        imageListModel = new ImageListModel();
+
+        imagesList = new JList(imageListModel.listModel());
         imagesList.setVisibleRowCount(-1);
+        imagesList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        imagesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         setLayout(new BorderLayout());
-         new JPanel();
-
+        imagesList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int imageHeight = ((ImageIcon)imagesList.getSelectedValue()).getIconHeight();
+                int imageWidt=((ImageIcon)imagesList.getSelectedValue()).getIconHeight();
+            }
+        });
     }
-
     /**
      * adds the items to the panel
      */
-    public void addComponents()
-    {
+    public void addComponents() {
         this.add(toolbar, BorderLayout.NORTH);
-        add(JScrollLeftPanel);
         add(imagesList, BorderLayout.CENTER);
+        add(new JScrollPane(imagesList));
+
+
     }
 
 

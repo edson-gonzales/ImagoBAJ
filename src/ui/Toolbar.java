@@ -18,9 +18,7 @@ public class Toolbar extends JToolBar {
     public Toolbar() {
         initComponents();
         addComponents();
-
     }
-
     /**
      * start the components of the tool bar adding the icon and starting the FileChooser
      */
@@ -31,19 +29,14 @@ public class Toolbar extends JToolBar {
                 fileChooser("");
             }
         };
-
     }
-
     /**
      * adds the listener action to the button to select the file
      */
     public void addComponents() {
-
         JButton JBPath = add(actionPath);
         JBPath.setToolTipText("Path");
-
     }
-
     /**
      * creates the folder finder which the images are loaded
      * "Path" variable will be the default address that will be used later
@@ -57,12 +50,9 @@ public class Toolbar extends JToolBar {
         int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            System.out.println(selectedFile.getAbsolutePath());
-
         }
         if (returnValue == JFileChooser.CANCEL_OPTION) {
             fileChooser.cancelSelection();
         }
-
     }
 }
