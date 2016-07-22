@@ -1,7 +1,6 @@
 package core;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,13 +12,13 @@ import java.io.IOException;
  */
 public class ComparePixel implements CompareStrategy {
 
-    private int widthImageOne;
-    private int heightImageOne;
-    private int widthImageTwo;
-    private int heightImageTwo;
+    private int widthImageSource;
+    private int heightImageSource;
+    private int widthImageToCompare;
+    private int heightImageToCompare;
 
-    private BufferedImage imageImagoOne;
-    private BufferedImage imageImagoTwo;
+    private BufferedImage imageSource;
+    private BufferedImage imageToCompare;
 
     /**
      * Compare a image with other image for pixel.
@@ -50,28 +49,28 @@ public class ComparePixel implements CompareStrategy {
      * @return true if they are duplicates or false if they are not.
      */
     private boolean compareWidthAndHeight(File imageOfTheList, File imageInput) throws IOException {
-        imageImagoOne = ImageIO.read(imageOfTheList);
-        widthImageOne = imageImagoOne.getWidth();
-        heightImageOne = imageImagoOne.getHeight();
+        imageSource = ImageIO.read(imageOfTheList);
+        widthImageSource = imageSource.getWidth();
+        heightImageSource = imageSource.getHeight();
 
-        imageImagoTwo = ImageIO.read(imageInput);
-        widthImageTwo = imageImagoTwo.getWidth();
-        heightImageTwo = imageImagoTwo.getHeight();
+        imageToCompare = ImageIO.read(imageInput);
+        widthImageToCompare = imageToCompare.getWidth();
+        heightImageToCompare = imageToCompare.getHeight();
 
-        if (widthImageOne == widthImageTwo && heightImageOne == heightImageTwo) {
-            return compareTwoImagePixelY();
+        if (widthImageSource == widthImageToCompare && heightImageSource == heightImageToCompare) {
+            return compareTwoImageByHeight();
         }
         return false;
     }
 
     /**
-     * It moves through the image pixels on the Y axis.
+     * Compare images by Height of the image.
      *
      * @return true if they are duplicates or false if they are not.
      */
-    private boolean compareTwoImagePixelY() {
-        for (int pixelY = 0; pixelY < heightImageOne; pixelY++) {
-            if (compareTwoImagePixelX(pixelY)) {
+    private boolean compareTwoImageByHeight() {
+        for (int pixelY = 0; pixelY < heightImageSource; pixelY++) {
+            if (compareTwoImageByWidth(pixelY)) {
                 return true;
             }
         }
@@ -79,32 +78,18 @@ public class ComparePixel implements CompareStrategy {
     }
 
     /**
-     * It moves through the image pixels on the X axis.
+     * Compare images by Width of the image.
      *
      * @param pixelY the number that indicates the position on the Y axis.
      * @return true if they are duplicates or false if they are not.
      */
-    private boolean compareTwoImagePixelX(int pixelY) {
-        for (int pixelX = 0; pixelX < widthImageOne; pixelX++) {
-            Color colorImageOne = new Color(imageImagoOne.getRGB(pixelX, pixelY));
-            Color colorImageTwo = new Color(imageImagoTwo.getRGB(pixelX, pixelY));
-            if (compareTwoColor(colorImageOne, colorImageTwo)) {
+    private boolean compareTwoImageByWidth(int pixelY) {
+        for (int pixelX = 0; pixelX < widthImageSource; pixelX++) {
+            int colorImageSource = imageSource.getRGB(pixelX, pixelY);
+            int colorImageToCompare = imageToCompare.getRGB(pixelX, pixelY);
+            if (colorImageSource == colorImageToCompare) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    /**
-     * Compare a image with other image for color.
-     *
-     * @param colorImageOne the Color object of the list to compare.
-     * @param colorImageTwo the Color object of input to compare.
-     * @return true if they are duplicates or false if they are not.
-     */
-    private boolean compareTwoColor(Color colorImageOne, Color colorImageTwo) {
-        if (colorImageOne.equals(colorImageTwo)) {
-            return true;
         }
         return false;
     }
