@@ -57,7 +57,8 @@ public class ComparePixel implements CompareStrategy {
         widthImageToCompare = imageToCompare.getWidth();
         heightImageToCompare = imageToCompare.getHeight();
 
-        if (widthImageSource == widthImageToCompare && heightImageSource == heightImageToCompare) {
+        if (widthImageSource == widthImageToCompare &&
+                heightImageSource == heightImageToCompare) {
             return compareTwoImageByHeight();
         }
         return false;
@@ -70,11 +71,11 @@ public class ComparePixel implements CompareStrategy {
      */
     private boolean compareTwoImageByHeight() {
         for (int pixelY = 0; pixelY < heightImageSource; pixelY++) {
-            if (compareTwoImageByWidth(pixelY)) {
-                return true;
+            if (!compareTwoImageByWidth(pixelY)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -84,13 +85,13 @@ public class ComparePixel implements CompareStrategy {
      * @return true if they are duplicates or false if they are not.
      */
     private boolean compareTwoImageByWidth(int pixelY) {
-        for (int pixelX = 0; pixelX < widthImageSource; pixelX++) {
+         for (int pixelX = 0; pixelX < widthImageSource; pixelX++) {
             int colorImageSource = imageSource.getRGB(pixelX, pixelY);
             int colorImageToCompare = imageToCompare.getRGB(pixelX, pixelY);
-            if (colorImageSource == colorImageToCompare) {
-                return true;
+            if (colorImageSource != colorImageToCompare) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
