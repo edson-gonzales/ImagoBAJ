@@ -12,6 +12,7 @@ import java.util.*;
 public class Duplicate {
     private ArrayList<File> duplicateImage;
     private ArrayList<File> listImage;
+    HashMap<String, CompareStrategy> strategyAvailable;
 
     private String strategy;
     private Object imageInput;
@@ -27,6 +28,10 @@ public class Duplicate {
         this.strategy = strategy;
         this.imageInput = imageInput;
         duplicateImage = new ArrayList<>();
+        this.strategyAvailable = new HashMap<String, CompareStrategy>();
+        strategyAvailable.put("Name", new CompareName());
+        strategyAvailable.put("Size", new CompareSize());
+        strategyAvailable.put("Pixel", new ComparePixel());
     }
 
     /**
@@ -35,11 +40,8 @@ public class Duplicate {
      * @param folder an object Folder to get the Image list.
      */
     public void searchDuplicate(Folder folder) {
-        HashMap<String, CompareStrategy> strategyAvailable = new HashMap<String, CompareStrategy>();
-        strategyAvailable.put("Name", new CompareName());
-        strategyAvailable.put("Size", new CompareSize());
 
-        CompareStrategy strategyUsed = strategyAvailable.get(strategy);
+        CompareStrategy strategyUsed = this.strategyAvailable.get(strategy);
         listImage = folder.getListImageFiles();
 
         for (File image : listImage) {
