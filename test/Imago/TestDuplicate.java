@@ -67,4 +67,17 @@ public class TestDuplicate {
 
         assertEquals(2, duplicate.sizeImage());
     }
+
+    @Test
+    public void testGetStrategyPixelTwoImage() {
+
+        Folder files = new Folder();
+        String path = "test/Files";
+        File folder = new File(path);
+        files.listImageDirectory(folder);
+        Duplicate duplicate = new Duplicate("Pixel", "test/Files/bites422.png");
+        duplicate.searchDuplicate(files);
+
+        assertEquals(2, duplicate.sizeImage());
+    }
 }
