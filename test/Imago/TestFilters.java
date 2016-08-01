@@ -14,26 +14,26 @@ import static org.junit.Assert.assertNotEquals;
 public class TestFilters {
     @Test
     public void testSizeNewImageFilterGray() {
-        File directoryOrigin = new File("test/Filters/header-bg.jpg");
-        File directoryDestiny = new File("test/Filters/Filter");
+        File pathSourceImage = new File("test/Filters/header-bg.jpg");
+        File pathDestinyFile = new File("test/Filters/Filter");
+        int expectedImageLength =  89196;
 
-
-        Filters filters = new Filters(directoryOrigin, EnumFilter.GRAY);
-        filters.loadFileToBufferedImage(directoryDestiny);
-        File imageGray = new File(directoryDestiny + "/header-bg.jpg");
-        assertEquals(89196, imageGray.length());
+        Filters filters = new Filters(pathSourceImage, EnumFilter.GRAY);
+        filters.loadFileToBufferedImage(pathDestinyFile);
+        File imageGray = new File(pathDestinyFile + "/header-bg.jpg");
+        assertEquals(expectedImageLength, imageGray.length());
     }
 
     @Test
     public void testOriginNotEqualsWithImageFilterGray() {
-        File directoryOrigin = new File("test/Filters/header-bg.jpg");
-        File directoryDestiny = new File("test/Filters/Filter");
+        File pathSourceImage = new File("test/Filters/header-bg.jpg");
+        File pathDestinyFile = new File("test/Filters/Filter");
 
 
-        Filters filters = new Filters(directoryOrigin, EnumFilter.GRAY);
-        filters.loadFileToBufferedImage(directoryDestiny);
-        File imageGray = new File(directoryDestiny + "/header-bg.jpg");
-        assertNotEquals(directoryOrigin.length(), imageGray.length());
+        Filters filters = new Filters(pathSourceImage, EnumFilter.GRAY);
+        filters.loadFileToBufferedImage(pathDestinyFile);
+        File imageGray = new File(pathDestinyFile + "/header-bg.jpg");
+        assertNotEquals(pathSourceImage.length(), imageGray.length());
     }
 }
 
