@@ -6,5 +6,5 @@ package filter;
  * @autor Bruno Vasquez
  */
 public enum EnumFilter {
-    GRAY,
+    GRAY, INVERT, COLOR, SHARPEN, BLUR, EDGE, BLUEINVERT, POSTERIZE, IDENTITY,
 }
