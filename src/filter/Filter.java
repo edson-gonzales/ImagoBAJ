@@ -1,5 +1,7 @@
 package filter;
+
 import java.awt.image.BufferedImage;
+
 /**
  * This class Filters a Buffered of a image.
  *
