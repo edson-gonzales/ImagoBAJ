@@ -12,8 +12,8 @@ import java.io.File;
 /**
  * This is the panel that all the images will be loaded in a small icons list
  */
-public class LeftSearchPanel extends JPanel {
-
+public class LeftSearchPanel extends JPanel implements ActionListener {
+    private ImageInformationPanel imageInformationPanel;
     private JToolBar jToolBar;
     private ImageIcon iconPath;
     private JButton chooseFileButton;
@@ -23,10 +23,14 @@ public class LeftSearchPanel extends JPanel {
     private JScrollPane scrollPaneJlist;
     private RightPanelViewer rightPanelViewer;
 
+
     /**
-     * constructor load all static metods and apply  a Border layout
+     * the Constructor is in charge of load the methods JtoolBar and Set a Layout
+     * also receive the Rigth Panel in which exist the methods are necessary to
+     * change the image in the right panel
      *
-     * @param rightPanelViewer this object is the rigth panel, We instantiate it to use some methods of the panel
+     * @param rightPanelViewer this object is the rigth panel,
+     *                         We instantiate it to use some methods of the panel
      */
     public LeftSearchPanel(RightPanelViewer rightPanelViewer) {
         this.rightPanelViewer = rightPanelViewer;
@@ -38,22 +42,25 @@ public class LeftSearchPanel extends JPanel {
      * this method is the toolbar which will be able to choose the folders that images are loaded
      */
     public void toolbar() {
-        iconPath = new ImageIcon(ToolBar.class.getResource("../img/folderOpen.gif"));
+        iconPath = new ImageIcon(getClass().getResource("../img/folderOpen.gif"));
         chooseFileButton = new JButton(iconPath);
-        chooseFileButton.addActionListener(new ButtonFile());
+        chooseFileButton.addActionListener(this);
         jToolBar = new JToolBar();
         jToolBar.add(chooseFileButton);
         this.add(jToolBar, BorderLayout.NORTH);
     }
 
     /**
-     * this methods instance the Jlist and contains the event mouse clicked who is in charge to select the image that will be displayed
+     * this methods instance the Jlist and contains the event mouse clicked who
+     * is in charge to select the image that will be displayed
      *
-     * @param path This parameter is the address of the folder where the images are loaded is a string and contains an absolute path
+     * @param path This parameter is the address of the folder where the images
+     *             are loaded is a string and contains an absolute path
      */
     public void initComponents(String path) {
+
         imageListModel = new ImageListModel();
-        imagesList = new JList(imageListModel.listModel(path));
+        imagesList = new JList((imageListModel.listModel(path)));
         imagesList.setVisibleRowCount(-1);
         imagesList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         imagesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -63,19 +70,23 @@ public class LeftSearchPanel extends JPanel {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
                     Object item = imagesList.getSelectedValue();
+                    int i = imagesList.getSelectedIndex();
                     String imageSelectedPath = ((ImageIcon) (item)).getDescription();
+                    imageInformationPanel.imageProperties(imageSelectedPath);
                     rightPanelViewer.changeImage(imageSelectedPath);
-                    rightPanelViewer.setImageProperties(item);
                     rightPanelViewer.updateUI();
                 }
             }
         });
-        scrollPaneJlist = new JScrollPane(imagesList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneJlist = new JScrollPane(imagesList,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPaneJlist, BorderLayout.CENTER);
     }
 
     /**
-     * this method is responsible for selecting the directory and send it to the methods responsible for loading on the panel
+     * this method is responsible for selecting the directory and send it
+     * to the methods responsible for loading on the panel
      *
      * @return return the selected File
      */
@@ -89,6 +100,8 @@ public class LeftSearchPanel extends JPanel {
             this.removeAll();
             toolbar();
             initComponents(selectedFile.getAbsolutePath());
+            imageInformationPanel = new ImageInformationPanel();
+            this.add(imageInformationPanel, BorderLayout.SOUTH);
             this.updateUI();
         }
         if (returnValue == JFileChooser.CANCEL_OPTION) {
@@ -100,9 +113,9 @@ public class LeftSearchPanel extends JPanel {
     /**
      * this is the action performed to the button File located in the toolbar
      */
-    public class ButtonFile implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == chooseFileButton) {
             fileChooser();
         }
     }

@@ -83,8 +83,10 @@ public class ImageIconToCharge extends ImageIcon {
     public ImageIcon getScaledImage(int width, int height) {
         ImageIcon imageIcon = new ImageIcon(this.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
         imageIcon.setDescription(this.pathOfImage);
+
         return imageIcon;
     }
+
 
 
 }

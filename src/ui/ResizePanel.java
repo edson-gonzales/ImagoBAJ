@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 /**
  * this class is in charge to capture de values of the width and high which the image
@@ -18,12 +19,14 @@ public class ResizePanel extends JFrame {
     private JTextField verticalTextField;
     private JButton acceptButton;
     private JButton cancelButton;
-
+    private static final String FILENAME = "ui/LabelsBundle";
+    ResourceBundle labels;
     /**
      * Constructor
      */
     public ResizePanel() {
         super("RESIZE PANEL");
+        labels = labels.getBundle(FILENAME);
         this.setSize(300, 175);
         initComponents();
         addComponents();
@@ -34,12 +37,12 @@ public class ResizePanel extends JFrame {
      * button, textfields and labels
      */
     public void initComponents() {
-        acceptButton = new JButton("ACEPTAR");
+        acceptButton = new JButton(labels.getString("Resize.Panel.buttonAccept"));
         acceptButton.addActionListener(new ActionAcceptButton());
-        cancelButton = new JButton("CANCELAR");
+        cancelButton = new JButton(labels.getString("Resize.Panel.buttonCancel"));
         cancelButton.addActionListener(new ActionCancelButton());
-        horizontalLabel = new JLabel("Horizontal :");
-        verticalLabel = new JLabel("Vertical :");
+        horizontalLabel = new JLabel(labels.getString("Resize.Panel.labelHorizontal"));
+        verticalLabel = new JLabel(labels.getString("Resize.Panel.labelVertical"));
         horizontaltextField = new JTextField();
         verticalTextField = new JTextField();
 

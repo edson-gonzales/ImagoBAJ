@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 /**
  * THis class is the container of the left and right panel
@@ -15,12 +16,15 @@ public class ImagoMainWindow extends JFrame implements ActionListener {
     public JMenu jMenuFile, jMenuEdit, jMenuOpen, jMenuExit, jMenuHelp;
     public JMenuItem jMenuAbout;
     public JMenuBar optionsMenuBar;
+    private static final String FILENAME = "ui/LabelsBundle";
+    ResourceBundle labels;
 
     /**
      * Contructor init the methods that are in charge of drawing the frame
      */
     public ImagoMainWindow() {
         super("IMAGO");
+        labels = labels.getBundle(FILENAME);
         initComponents();
         addComponents();
         menuOption();
@@ -31,13 +35,13 @@ public class ImagoMainWindow extends JFrame implements ActionListener {
      */
     public void menuOption() {
         optionsMenuBar = new JMenuBar();
-        jMenuFile = new JMenu("FILE");
-        jMenuEdit = new JMenu("EDIT");
-        jMenuHelp = new JMenu("HELP");
+        jMenuFile = new JMenu(labels.getString("Imago.MainWindow.MenuFileFile"));
+        jMenuEdit = new JMenu(labels.getString("Imago.MainWindow.MenuFileEdit"));
+        jMenuHelp = new JMenu(labels.getString("Imago.MainWindow.MenuFileHelp"));
 
-        jMenuOpen = new JMenu("Open File");
-        jMenuExit = new JMenu("Exit");
-        jMenuAbout = new JMenuItem("About");
+        jMenuOpen = new JMenu(labels.getString("Imago.MainWindow.MenuFileItemOpenFile"));
+        jMenuExit = new JMenu(labels.getString("Imago.MainWindow.MenuFileItemExit"));
+        jMenuAbout = new JMenuItem(labels.getString("Imago.MainWindow.MenuHelpItemAbout"));
         jMenuAbout.addActionListener(this);
 
         jMenuHelp.add(jMenuAbout);
@@ -83,7 +87,8 @@ public class ImagoMainWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent eventoMenu) {
         if (eventoMenu.getSource() == jMenuAbout) {
             JOptionPane.showMessageDialog(null, "Develop by: Alvaro Daza and Bruno Vasquez \n" +
-                    "Imago is a simple application which performs the basic functions \n resize, rotate and apply to an image flters");
+                    "Imago is a simple application which performs the basic functions \n" +
+                            " resize, rotate and apply to an image flters");
         }
     }
 }
