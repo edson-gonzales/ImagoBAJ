@@ -21,7 +21,6 @@ public class ToolBarOperationWhitImages extends JToolBar implements ChangeListen
     private JSlider jSliderResizeImage;
     private RightPanelViewer rightPanelViewer;
 
-
     /**
      * Constructor
      */
@@ -85,5 +84,9 @@ public class ToolBarOperationWhitImages extends JToolBar implements ChangeListen
         int resizeValue;
         resizeValue = jSliderResizeImage.getValue();
         rightPanelViewer.zoomImage(resizeValue, rightPanelViewer.getImageIcon());
+    }
+
+    public void setSlider() {
+        jSliderResizeImage.setValue(0);
     }
 }

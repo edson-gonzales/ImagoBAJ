@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ResourceBundle;
 
 
 /**
@@ -14,15 +15,18 @@ import java.io.File;
  */
 public class LeftSearchPanel extends JPanel implements ActionListener {
     private ImageInformationPanel imageInformationPanel;
-    private JToolBar jToolBar;
-    private ImageIcon iconPath;
-    private JButton chooseFileButton;
-    private File selectedFile;
+
     private JList imagesList;
     private ImageListModel imageListModel;
     private JScrollPane scrollPaneJlist;
     private RightPanelViewer rightPanelViewer;
+    private JPopupMenu popupMenu;
+    private JMenuItem searchBySize;
+    private JMenuItem searchByLength;
+    private JMenuItem searchByPixel;
 
+    private static final String FILENAME = "ui/LabelsBundle";
+    ResourceBundle labels;
 
     /**
      * the Constructor is in charge of load the methods JtoolBar and Set a Layout
@@ -33,22 +37,29 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
      *                         We instantiate it to use some methods of the panel
      */
     public LeftSearchPanel(RightPanelViewer rightPanelViewer) {
+        labels = labels.getBundle(FILENAME);
         this.rightPanelViewer = rightPanelViewer;
         this.setLayout(new BorderLayout());
-        toolbar();
+
+        popUpMenuIcons();
     }
 
     /**
-     * this method is the toolbar which will be able to choose the folders that images are loaded
+     * this is the popUp menu that will show the option of search by size, name and pixels
      */
-    public void toolbar() {
-        iconPath = new ImageIcon(getClass().getResource("../img/folderOpen.gif"));
-        chooseFileButton = new JButton(iconPath);
-        chooseFileButton.addActionListener(this);
-        jToolBar = new JToolBar();
-        jToolBar.add(chooseFileButton);
-        this.add(jToolBar, BorderLayout.NORTH);
+    public void popUpMenuIcons() {
+        popupMenu = new JPopupMenu();
+        searchBySize = new JMenuItem(labels.getString("PopUpMenu.searchBy.size"));
+        popupMenu.add(searchBySize);
+        searchByLength = new JMenuItem(labels.getString("PopUpMenu.searchBy.Length"));
+        popupMenu.add(searchByLength);
+        searchByPixel = new JMenuItem(labels.getString("PopUpMenu.searchBy.Pixel"));
+        popupMenu.add(searchByPixel);
+        searchBySize.addActionListener(this);
+        searchByLength.addActionListener(this);
+        searchByPixel.addActionListener(this);
     }
+
 
     /**
      * this methods instance the Jlist and contains the event mouse clicked who
@@ -58,7 +69,6 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
      *             are loaded is a string and contains an absolute path
      */
     public void initComponents(String path) {
-
         imageListModel = new ImageListModel();
         imagesList = new JList((imageListModel.listModel(path)));
         imagesList.setVisibleRowCount(-1);
@@ -70,11 +80,18 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
                     Object item = imagesList.getSelectedValue();
-                    int i = imagesList.getSelectedIndex();
                     String imageSelectedPath = ((ImageIcon) (item)).getDescription();
                     imageInformationPanel.imageProperties(imageSelectedPath);
                     rightPanelViewer.changeImage(imageSelectedPath);
+                    rightPanelViewer.changeSliderValue();
                     rightPanelViewer.updateUI();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -85,29 +102,15 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * this method is responsible for selecting the directory and send it
-     * to the methods responsible for loading on the panel
-     *
-     * @return return the selected File
+     * the update panel re paint the Jpanel showing the result search
+     * @param pathFile this is a file that contains the file was changed
      */
-    public File fileChooser() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fileChooser.setCurrentDirectory(new java.io.File("."));
-        int returnValue = fileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            selectedFile = fileChooser.getSelectedFile();
-            this.removeAll();
-            toolbar();
-            initComponents(selectedFile.getAbsolutePath());
-            imageInformationPanel = new ImageInformationPanel();
-            this.add(imageInformationPanel, BorderLayout.SOUTH);
-            this.updateUI();
-        }
-        if (returnValue == JFileChooser.CANCEL_OPTION) {
-            fileChooser.cancelSelection();
-        }
-        return selectedFile;
+    public void updatePanel(File pathFile) {
+        this.removeAll();
+        initComponents(pathFile.getAbsolutePath());
+        imageInformationPanel = new ImageInformationPanel();
+        this.add(imageInformationPanel, BorderLayout.SOUTH);
+        this.updateUI();
     }
 
     /**
@@ -115,9 +118,17 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == chooseFileButton) {
-            fileChooser();
+
+        if (e.getSource() == searchBySize) {
+            String testJlistMenucontext = ((ImageIcon) (imagesList.getSelectedValue())).getDescription();
+        }
+        if (e.getSource() == searchByLength) {
+            String testJlistMenucontext = ((ImageIcon) (imagesList.getSelectedValue())).getDescription();
+        }
+        if (e.getSource() == searchByPixel) {
+            String testJlistMenucontext = ((ImageIcon) (imagesList.getSelectedValue())).getDescription();
         }
     }
+
 
 }

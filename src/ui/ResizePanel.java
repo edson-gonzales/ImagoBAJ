@@ -21,6 +21,7 @@ public class ResizePanel extends JFrame {
     private JButton cancelButton;
     private static final String FILENAME = "ui/LabelsBundle";
     ResourceBundle labels;
+
     /**
      * Constructor
      */
