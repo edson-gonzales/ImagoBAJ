@@ -10,12 +10,16 @@ import java.util.ResourceBundle;
  * THis class is the container of the left and right panel
  */
 public class ImagoMainWindow extends JFrame implements ActionListener {
-    public LeftSearchPanel leftPanel;
+
+    private JPanel panelTool;
+    private ToolBarLeftPanel toolBarLeftPanel;
+    public JTabbedPane leftPanels;
     public RightPanelViewer rightPanelViewer;
     public JPanel centerPanel;
     public JMenu jMenuFile, jMenuEdit, jMenuOpen, jMenuExit, jMenuHelp;
     public JMenuItem jMenuAbout;
     public JMenuBar optionsMenuBar;
+    public LeftSearchPanel leftSearchPanel;
     private static final String FILENAME = "ui/LabelsBundle";
     ResourceBundle labels;
 
@@ -36,8 +40,11 @@ public class ImagoMainWindow extends JFrame implements ActionListener {
     public void menuOption() {
         optionsMenuBar = new JMenuBar();
         jMenuFile = new JMenu(labels.getString("Imago.MainWindow.MenuFileFile"));
+        jMenuFile.setFont(new Font("Segoe Print", Font.BOLD, 15));
         jMenuEdit = new JMenu(labels.getString("Imago.MainWindow.MenuFileEdit"));
+        jMenuEdit.setFont(new Font("Segoe Print", Font.BOLD, 15));
         jMenuHelp = new JMenu(labels.getString("Imago.MainWindow.MenuFileHelp"));
+        jMenuHelp.setFont(new Font("Segoe Print", Font.BOLD, 15));
 
         jMenuOpen = new JMenu(labels.getString("Imago.MainWindow.MenuFileItemOpenFile"));
         jMenuExit = new JMenu(labels.getString("Imago.MainWindow.MenuFileItemExit"));
@@ -56,23 +63,38 @@ public class ImagoMainWindow extends JFrame implements ActionListener {
 
     /**
      * here the components are initialized
-     * Jpanels left and right
+     * JTabbedanels and the rigth panel
      */
     public void initComponents() {
+
+        panelTool=new JPanel();
+        panelTool.setLayout(new BoxLayout(panelTool,BoxLayout.Y_AXIS));
         rightPanelViewer = new RightPanelViewer();
-        leftPanel = new LeftSearchPanel(rightPanelViewer);
+        leftPanels=new JTabbedPane();
         centerPanel = new JPanel();
-        centerPanel.setBackground(Color.blue);
         centerPanel.setLayout(new GridLayout(1, 2));
+        leftSearchPanel=new LeftSearchPanel(rightPanelViewer);
+        leftPanels.addTab("Icons View",leftSearchPanel);
+        leftPanels.setFont(new Font("Segoe Print", Font.BOLD, 15));
+        leftPanels.addTab("Directory View", new LeftSearchDirectoryPanel(rightPanelViewer));
+        toolBarLeftPanel=new ToolBarLeftPanel(leftSearchPanel);
     }
+
 
     /**
      * this method adds the component to the Frame and set de size
      */
     public void addComponents() {
-        centerPanel.add(leftPanel);
+
+
+        centerPanel.add(leftPanels);
         centerPanel.add(rightPanelViewer);
+        panelTool.add(toolBarLeftPanel);
+
+
+
         this.getContentPane().setLayout(new BorderLayout());
+        this.add(panelTool,BorderLayout.WEST);
         this.getContentPane().add(centerPanel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1500, 1000);
