@@ -1,0 +1,1 @@
+This folder wil be contain the image whit a filter Sharpen before export.

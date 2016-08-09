@@ -29,15 +29,14 @@ public class FormatExportImage {
      * Create an image with new format.
      *
      * @param pathExport an String to sets the path to export
-     * @param nameExport an String to sets the name to export
      */
-    public void fileImageWithNewFormat(String pathExport, String nameExport) {
+    public void fileImageWithNewFormat(File pathExport) {
         try {
             BufferedImage bufferRead = ImageIO.read(fileImage);
             BufferedImage newBufferImage = new BufferedImage(bufferRead.getWidth(), bufferRead.getHeight(), BufferedImage.TYPE_INT_RGB);
             newBufferImage.createGraphics().drawImage(bufferRead, 0, 0, Color.white, null);
 
-            ImageIO.write(newBufferImage, format, new File(pathExport + nameExport + "." + format));
+            ImageIO.write(newBufferImage, format, new File(pathExport + "." + format));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+
 /**
  * This class Filters a Buffered of a image.
  *
