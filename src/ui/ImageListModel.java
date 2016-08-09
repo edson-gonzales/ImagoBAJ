@@ -1,23 +1,30 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileOwnerAttributeView;
+import java.util.ArrayList;
 
 /**
  * THis class are in charge of create and send the list model
  * and will be responsible load the images that user choose
  */
 public class ImageListModel {
-    ImageIconToCharge imageIconToCharge;
-    DefaultListModel listIMag = new DefaultListModel();
-    DefaultListModel list = new DefaultListModel();
+    private ImageIconToCharge imageIconToCharge;
+    private DefaultListModel listIMag = new DefaultListModel();
+    private DefaultListModel list = new DefaultListModel();
+    private DefaultTableModel informationTableModel;
+    private Object[] fileImage;
 
     /**
-     * THIS METHOD IS ONLY TO TEST HOW THE IMAGE ICONS ARE CHARGED
-     * ONCE APPROVED CODE REVIEW THIS METHOD WILL BE REPLACED BY BRUNO'S METHOD
-     *
      * this method returns the default model to the LeftPanel
-     * this DefaulModelList will be loaded for a JList
+     * this DefaultModelList will be loaded for a JList
      *
      * @return returns the  variable  listModel filled whit imagesIcon
      */
@@ -53,6 +60,60 @@ public class ImageListModel {
         }
         return list;
     }
+
+    /**
+     * this method is in charge to load the imageIcons in the JList
+     *
+     * @param imagesFiles receive a array whit the files that will be charged
+     * @return Return a default List model  to be charged bu the JList
+     */
+    public DefaultListModel setListModel(ArrayList<File> imagesFiles) {
+        int index = 0;
+        for (File image : imagesFiles) {
+            String pathOfImage = image.getPath();
+            String nameOfImage = image.getName();
+            long sizeOfImage = image.length();
+            imageIconToCharge = new ImageIconToCharge(sizeOfImage, nameOfImage, pathOfImage);
+            imageIconToCharge.setDescription(pathOfImage);
+            list.add(index++, imageIconToCharge.getScaledImage(100, 100));
+        }
+        return list;
+    }
+
+    /**
+     * this class is in charge to load the  values of the table
+     *
+     * @param files is an array of files
+     * @return return a DefaultTableModel to be load by the TableModel
+     */
+    public DefaultTableModel setDefaultTableModel(ArrayList<File> files) {
+
+        String[] columnsName = {"Name", "Size [Bytes]", "Directory", "Owner", "Absolute Path"};
+        informationTableModel = new DefaultTableModel(columnsName, 0);
+        for (File imageinformation : files) {
+            Path path = Paths.get(imageinformation.getAbsolutePath());
+            FileOwnerAttributeView view = Files.getFileAttributeView(path,
+                    FileOwnerAttributeView.class);
+            String name = imageinformation.getName();
+            long sizeOfImage = imageinformation.length();
+            String parentFile = imageinformation.getParent();
+            String absolutePath = imageinformation.getAbsolutePath();
+            fileImage = new Object[5];
+            fileImage[0] = name;
+            fileImage[1] = (double) sizeOfImage / 1000;
+            fileImage[2] = parentFile;
+            try {
+                fileImage[3] = view.getOwner();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fileImage[4] = absolutePath;
+            informationTableModel.addRow(fileImage);
+        }
+        return informationTableModel;
+    }
+
+
 }
 
 

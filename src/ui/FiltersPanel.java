@@ -1,10 +1,14 @@
 package ui;
 
 
+import filter.EnumFilter;
+import filter.Filters;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * This class is responsible for allowing the user to set and
@@ -14,38 +18,41 @@ import java.awt.event.ActionListener;
  */
 public class FiltersPanel extends JFrame implements ActionListener {
     private JPanel filtersPanel;
-    private JPanel buttonsPanel;
-    private JButton acceptButton;
-    private JButton cancelButton;
     private JButton applyButton;
+    private JButton closeButton;
     private JComboBox filtersComboBox;
+    private RightPanelViewer rightPanelViewer;
+    private String pathSourceImage;
 
     /**
      * the frame builder instance methods responsible for drawing the frame
      */
-    public FiltersPanel() {
+    public FiltersPanel(RightPanelViewer rightPanelViewer) {
         super("FILTERS");
-        setSize(300, 200);
+        setSize(250, 150);
         initComponents();
         addComponents();
+        this.rightPanelViewer = rightPanelViewer;
+        pathSourceImage = this.rightPanelViewer.getImageIcon().getDescription();
     }
 
     /**
      * instance all components of the frame
      */
     public void initComponents() {
-        String[] filters = {"filter1", "filter2", "filter3", "filter4"};
+        String[] filters = {"Gray", "Edge", "Blur", "Blue Invert",
+                "Identity", "Invert", "Posterize", "Sharpen", "Color"};
         filtersComboBox = new JComboBox(filters);
         filtersComboBox.addActionListener(this);
         applyButton = new JButton("Apply");
         applyButton.addActionListener(this);
-        acceptButton = new JButton("ACCEPT");
-        acceptButton.addActionListener(this);
-        cancelButton = new JButton("CANCEL");
+        closeButton = new JButton("Close");
+        closeButton.addActionListener(this);
         filtersPanel = new JPanel();
-        buttonsPanel = new JPanel();
         filtersPanel.setLayout(new FlowLayout());
         this.setLayout(new BorderLayout());
+        this.setLocation(((getToolkit().getScreenSize().width) - (this.getWidth())) / 2,
+                ((getToolkit().getScreenSize().height) - (this.getHeight())) / 2);
     }
 
     /**
@@ -54,13 +61,8 @@ public class FiltersPanel extends JFrame implements ActionListener {
     public void addComponents() {
         filtersPanel.add(filtersComboBox);
         filtersPanel.add(applyButton);
-        buttonsPanel.add(cancelButton);
-        buttonsPanel.add(Box.createRigidArea(new Dimension(10, 75)));
-        buttonsPanel.add(acceptButton);
+        filtersPanel.add(closeButton);
         this.add(filtersPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.SOUTH);
-        this.add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.EAST);
-        this.add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.WEST);
         this.add(Box.createRigidArea(new Dimension(20, 35)), BorderLayout.NORTH);
         this.getContentPane().add(filtersPanel);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -75,14 +77,70 @@ public class FiltersPanel extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == acceptButton) {
 
-        }
         if (e.getSource() == filtersComboBox) {
 
         }
         if (e.getSource() == applyButton) {
-
+            System.out.println(filtersComboBox.getSelectedItem());
+            filter(filtersComboBox.getSelectedIndex());
         }
+        if (e.getSource() == closeButton) {
+            this.dispose();
+        }
+    }
+
+    /**
+     * this method apply the selected filter
+     *
+     * @param selectedIndex
+     */
+    private void filter(int selectedIndex) {
+        EnumFilter strategyFilter = EnumFilter.GRAY;
+        File fileImageSource = new File(pathSourceImage);
+        String nameImage = fileImageSource.getName();
+        String nameDirectory = "";
+        switch (selectedIndex) {
+            case 0:
+                strategyFilter = EnumFilter.GRAY;
+                nameDirectory = "src/img/filters/gray/";
+                break;
+            case 1:
+                strategyFilter = EnumFilter.EDGE;
+                nameDirectory = "src/img/filters/edge/";
+                break;
+            case 2:
+                strategyFilter = EnumFilter.BLUR;
+                nameDirectory = "src/img/filters/blur/";
+                break;
+            case 3:
+                strategyFilter = EnumFilter.BLUEINVERT;
+                nameDirectory = "src/img/filters/blueInvert/";
+                break;
+            case 4:
+                strategyFilter = EnumFilter.IDENTITY;
+                nameDirectory = "src/img/filters/identity/";
+                break;
+            case 5:
+                strategyFilter = EnumFilter.INVERT;
+                nameDirectory = "src/img/filters/invert/";
+                break;
+            case 6:
+                strategyFilter = EnumFilter.POSTERIZE;
+                nameDirectory = "src/img/filters/posterize/";
+                break;
+            case 7:
+                strategyFilter = EnumFilter.SHARPEN;
+                nameDirectory = "src/img/filters/sharpen/";
+                break;
+            case 8:
+                strategyFilter = EnumFilter.COLOR;
+                nameDirectory = "src/img/filters/color/";
+                break;
+        }
+        Filters filters = new Filters(fileImageSource, strategyFilter);
+        filters.loadFileToBufferedImage(new File(nameDirectory));
+        rightPanelViewer.changeImage(nameDirectory + nameImage);
+        rightPanelViewer.updateUI();
     }
 }
