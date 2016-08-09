@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 /**
  * This class is the tool Bar which contains the operations that working with image
@@ -20,6 +21,7 @@ public class ToolBarOperationWhitImages extends JToolBar implements ChangeListen
     private Action actionFilterPath;
     private JSlider jSliderResizeImage;
     private RightPanelViewer rightPanelViewer;
+
 
     /**
      * Constructor
@@ -39,21 +41,21 @@ public class ToolBarOperationWhitImages extends JToolBar implements ChangeListen
         actionRotatePath = new AbstractAction("ROTATE", iconRotatePath) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                rotatePanel = new RotatePanel();
+                rotatePanel = new RotatePanel(rightPanelViewer);
             }
         };
         iconResizePath = new ImageIcon(getClass().getResource("../img/resizeIcon32.png"));
         actionResizePath = new AbstractAction("RESIZE", iconResizePath) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                resizePanel = new ResizePanel();
+                resizePanel = new ResizePanel(rightPanelViewer);
             }
         };
         iconFilterPath = new ImageIcon(getClass().getResource("../img/filterIcon32.png"));
         actionFilterPath = new AbstractAction("FILTER", iconFilterPath) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                filtersPanel = new FiltersPanel();
+                filtersPanel = new FiltersPanel(rightPanelViewer);
             }
         };
     }
@@ -81,9 +83,13 @@ public class ToolBarOperationWhitImages extends JToolBar implements ChangeListen
      */
     @Override
     public void stateChanged(ChangeEvent e) {
+
+
         int resizeValue;
         resizeValue = jSliderResizeImage.getValue();
         rightPanelViewer.zoomImage(resizeValue, rightPanelViewer.getImageIcon());
+
+
     }
 
     public void setSlider() {

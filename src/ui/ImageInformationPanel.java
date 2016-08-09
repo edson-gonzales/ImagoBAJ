@@ -1,6 +1,7 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.io.File;
 import java.util.ResourceBundle;
@@ -9,6 +10,7 @@ import java.util.ResourceBundle;
  * This clas is in charge to display the information of the image
  */
 public class ImageInformationPanel extends JPanel {
+    private Border raisedBevel;
     private JLabel imageNameText, imageSizeText, imageHeightText, imageWidthText, imagePathText;
     private JLabel imageName, imageSize, imageHeight, imageWidth, imagePath;
     private static final String FILENAME = "ui/LabelsBundle";
@@ -18,7 +20,9 @@ public class ImageInformationPanel extends JPanel {
      * the constructor initialize the methods
      */
     public ImageInformationPanel() {
-        this.setBackground(Color.GRAY);
+        raisedBevel = BorderFactory.createRaisedBevelBorder();
+        this.setBackground(Color.CYAN);
+        this.setBorder(raisedBevel);
         labels = labels.getBundle(FILENAME);
         initComponents();
         addComponents();

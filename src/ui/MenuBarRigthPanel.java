@@ -1,6 +1,9 @@
 package ui;
 
+import tools.FormatExportImage;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,97 +11,94 @@ import java.io.File;
 import java.util.ResourceBundle;
 
 /**
- * this class show the options of save and export
+ * This is the Menu Bar that contains the export option
  */
 public class MenuBarRigthPanel extends JMenuBar implements ActionListener {
     private RightPanelViewer rightPanelViewer;
-    private JMenu exportOption;
-    private JButton saveOption;
-    private JMenuItem exportAsJpg;
-    private JMenuItem exportAsPng;
-    private JMenuItem exportAsBmp;
-    private ImageIcon exportImage;
-    private ImageIcon saveImage;
+    private JButton exportButton;
+    private ImageIcon exportImageButton;
     private static final String FILENAME = "ui/LabelsBundle";
     ResourceBundle labels;
 
     /**
-     * the constructor initizlize the components
+     * the constructor
      *
-     * @param rightPanelViewer this is and object right panel
+     * @param rightPanelViewer recive an object right panel
      */
     public MenuBarRigthPanel(RightPanelViewer rightPanelViewer) {
         labels = labels.getBundle(FILENAME);
         initComponents();
         addComponents();
         this.rightPanelViewer = rightPanelViewer;
-
     }
 
     /**
-     * this method init the components
+     * initialize the components
      */
-
     public void initComponents() {
-        exportOption = new JMenu(labels.getString("MenuBar.rigth.panel.exportImage"));
-        exportOption.setFont(new Font("Segoe Print", Font.BOLD, 22));
-        exportImage = new ImageIcon(getClass().getResource("/img/exportIcon32.png"));
-        exportOption.setIcon(exportImage);
-        saveOption = new JButton(labels.getString("MenuBar.rigth.panel.saveImage"));
-        saveOption.setFont(new Font("Segoe Print", Font.BOLD, 22));
-        saveImage = new ImageIcon(getClass().getResource("/img/saveIcon32.png"));
-        saveOption.setIcon(saveImage);
-        saveOption.addActionListener(this);
-        exportAsJpg = new JMenuItem(labels.getString("MenuBar.rigth.panel.exportAsJpg"));
-        exportAsJpg.addActionListener(this);
-        exportAsPng = new JMenuItem(labels.getString("MenuBar.rigth.panel.exportAsPng"));
-        exportAsPng.addActionListener(this);
-        exportAsBmp = new JMenuItem(labels.getString("MenuBar.rigth.panel.exportAsBmp"));
-        exportAsBmp.addActionListener(this);
+        exportButton = new JButton(labels.getString("MenuBar.right.panel.exportImage"));
+        exportButton.setFont(new Font("Segoe Print", Font.BOLD, 17));
+        exportImageButton = new ImageIcon(getClass().getResource("/img/exportIcon32.png"));
+        exportButton.setIcon(exportImageButton);
+        exportButton.addActionListener(this);
     }
 
     /**
-     * this method add the components to the Menu Bar
+     * add the components to the Panel
      */
     public void addComponents() {
-        exportOption.add(exportAsJpg);
-        exportOption.add(exportAsPng);
-        exportOption.add(exportAsBmp);
-        this.add(exportOption);
-        this.add(saveOption);
-
+        this.add(exportButton);
     }
 
     /**
-     * aqui esta el metodo para salvar el archivo pegaso!
+     * this method is in charge to save the image
      */
     public void saveImageInFile() {
-
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setDialogTitle("SAVE FILE");
-        fileChooser.setCurrentDirectory(new File("."));
-        int returnValue = fileChooser.showOpenDialog(null);
+        fileChooser.setApproveButtonText("Save Image");
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("JPG File", ".jpg"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("BMP File", ".bmp"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("PNG File", ".png"));
+        fileChooser.setDialogTitle("Save Image As");
+        int returnValue = fileChooser.showSaveDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            if (fileChooser.getFileFilter().getDescription() == "JPG File") {
+                File pathExport = fileChooser.getSelectedFile();
+                exportImage("jpg", pathExport);
+
+            }
+            if (fileChooser.getFileFilter().getDescription() == "BMP File") {
+                System.out.println("BMP");
+
+                File pathExport = fileChooser.getSelectedFile();
+                exportImage("bmp", pathExport);
+            }
+            if (fileChooser.getFileFilter().getDescription() == "PNG File") {
+                System.out.println("PNG");
+
+                File pathExport = fileChooser.getSelectedFile();
+                exportImage("png", pathExport);
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == exportButton) {
+            saveImageInFile();
+        }
     }
 
     /**
-     * this is the event  of the popUp menus
-     * @param e this is the event
+     * this method export the image to the different formats
+     *
+     * @param type       this is  a String the extension
+     * @param pathExport the path of the file to export
      */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == exportAsJpg) {
-            System.out.println("JPG");
-        }
-        if (e.getSource() == exportAsPng) {
-            System.out.println("PNG");
-        }
-        if (e.getSource() == exportAsBmp) {
-            System.out.println("BMP");
-        }
-        if (e.getSource() == saveOption) {
-            saveImageInFile();
-            System.out.println("boton salvar !");
-        }
+    public void exportImage(String type, File pathExport) {
+        File fileImage = new File(rightPanelViewer.getImageIcon().getDescription());
+        FormatExportImage format = new FormatExportImage(type, fileImage);
+        format.fileImageWithNewFormat(pathExport);
     }
 }

@@ -1,5 +1,8 @@
 package ui;
 
+import core.Duplicate;
+import core.Folder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,8 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is the panel that all the images will be loaded in a small icons list
@@ -22,11 +27,13 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
     private RightPanelViewer rightPanelViewer;
     private JPopupMenu popupMenu;
     private JMenuItem searchBySize;
-    private JMenuItem searchByLength;
+    private JMenuItem searchByName;
     private JMenuItem searchByPixel;
-
+    private File selectedFile;
     private static final String FILENAME = "ui/LabelsBundle";
     ResourceBundle labels;
+    private LeftSearchDirectoryPanel leftSearchDirectoryPanel;
+    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /**
      * the Constructor is in charge of load the methods JtoolBar and Set a Layout
@@ -40,37 +47,50 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
         labels = labels.getBundle(FILENAME);
         this.rightPanelViewer = rightPanelViewer;
         this.setLayout(new BorderLayout());
-
         popUpMenuIcons();
     }
 
     /**
-     * this is the popUp menu that will show the option of search by size, name and pixels
+     * this method create the the context menu
      */
     public void popUpMenuIcons() {
         popupMenu = new JPopupMenu();
         searchBySize = new JMenuItem(labels.getString("PopUpMenu.searchBy.size"));
         popupMenu.add(searchBySize);
-        searchByLength = new JMenuItem(labels.getString("PopUpMenu.searchBy.Length"));
-        popupMenu.add(searchByLength);
+        searchByName = new JMenuItem(labels.getString("PopUpMenu.searchBy.Name"));
+        popupMenu.add(searchByName);
         searchByPixel = new JMenuItem(labels.getString("PopUpMenu.searchBy.Pixel"));
         popupMenu.add(searchByPixel);
         searchBySize.addActionListener(this);
-        searchByLength.addActionListener(this);
+        searchByName.addActionListener(this);
         searchByPixel.addActionListener(this);
     }
 
+    /**
+     * this methos refresh table
+     *
+     * @param pathFile recive a file that
+     */
+
+    public void updatePanel(File pathFile) {
+        this.removeAll();
+        Folder files = new Folder();
+        files.listImageDirectory(pathFile);
+        ArrayList<File> listFileImage = files.getListImageFiles();
+        recursiveList(listFileImage);
+        imageInformationPanel = new ImageInformationPanel();
+        this.add(imageInformationPanel, BorderLayout.SOUTH);
+        this.updateUI();
+    }
 
     /**
-     * this methods instance the Jlist and contains the event mouse clicked who
-     * is in charge to select the image that will be displayed
+     * this method
      *
-     * @param path This parameter is the address of the folder where the images
-     *             are loaded is a string and contains an absolute path
+     * @param filesImage
      */
-    public void initComponents(String path) {
+    public void recursiveList(ArrayList<File> filesImage) {
         imageListModel = new ImageListModel();
-        imagesList = new JList((imageListModel.listModel(path)));
+        imagesList = new JList((imageListModel.setListModel(filesImage)));
         imagesList.setVisibleRowCount(-1);
         imagesList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         imagesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -78,7 +98,7 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 1) {
                     Object item = imagesList.getSelectedValue();
                     String imageSelectedPath = ((ImageIcon) (item)).getDescription();
                     imageInformationPanel.imageProperties(imageSelectedPath);
@@ -102,33 +122,80 @@ public class LeftSearchPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * the update panel re paint the Jpanel showing the result search
-     * @param pathFile this is a file that contains the file was changed
+     * this is the action performed to the button File located in the toolbar
      */
-    public void updatePanel(File pathFile) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            if (e.getSource() == searchByName) {
+                File fileImage = new File(((ImageIcon) (imagesList.getSelectedValue())).getDescription());
+                String nameImage = fileImage.getName();
+                searchDuplicatesBySize("Name", nameImage);
+            }
+            if (e.getSource() == searchBySize) {
+                File fileImage = new File(((ImageIcon) (imagesList.getSelectedValue())).getDescription());
+                Long lengthImage = fileImage.length();
+                searchDuplicatesBySize("Size", lengthImage);
+            }
+            if (e.getSource() == searchByPixel) {
+                File fileImage = new File(((ImageIcon) (imagesList.getSelectedValue())).getDescription());
+                String pathImage = fileImage.getPath();
+                searchDuplicatesBySize("Pixel", pathImage);
+            }
+
+        } catch (Exception ex) {
+            LOGGER.setLevel(Level.WARNING);
+            LOGGER.warning("The file was not selected " + e);
+        }
+    }
+
+    /**
+     * this method is in charge to earch duplicates according to the criteria
+     *
+     * @param strategyDuplicate
+     * @param dateToCompare
+     */
+    private void searchDuplicatesBySize(String strategyDuplicate, Object dateToCompare) {
+        try {
+            Folder files = new Folder();
+            File fileImage = new File(((ImageIcon) (imagesList.getSelectedValue())).getDescription());
+            files.listImageDirectory(selectedFile);
+
+            Duplicate duplicate = new Duplicate(strategyDuplicate, dateToCompare);
+            duplicate.searchDuplicate(files);
+            ArrayList<File> duplicates = duplicate.getListDuplicate();
+            repaintPanel(duplicates);
+            leftSearchDirectoryPanel.repaintPanel(duplicates);
+
+        } catch (Exception e) {
+            LOGGER.setLevel(Level.WARNING);
+            LOGGER.warning("The file was not selected " + e);
+        }
+    }
+
+    /**
+     * this method is in charge to repaint the image in the panel
+     *
+     * @param files recive an array of files which they will be loaded to be displayed
+     */
+    public void repaintPanel(ArrayList<File> files) {
         this.removeAll();
-        initComponents(pathFile.getAbsolutePath());
+        recursiveList(files);
         imageInformationPanel = new ImageInformationPanel();
         this.add(imageInformationPanel, BorderLayout.SOUTH);
         this.updateUI();
     }
 
-    /**
-     * this is the action performed to the button File located in the toolbar
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        if (e.getSource() == searchBySize) {
-            String testJlistMenucontext = ((ImageIcon) (imagesList.getSelectedValue())).getDescription();
-        }
-        if (e.getSource() == searchByLength) {
-            String testJlistMenucontext = ((ImageIcon) (imagesList.getSelectedValue())).getDescription();
-        }
-        if (e.getSource() == searchByPixel) {
-            String testJlistMenucontext = ((ImageIcon) (imagesList.getSelectedValue())).getDescription();
-        }
+    public void setFile(File selectedFile) {
+        this.selectedFile = selectedFile;
     }
 
-
+    /**
+     * this methos set the panel Left search Directory panel
+     *
+     * @param leftSearchDirectoryPanel recive an object  Jpanel
+     */
+    public void setLeftSearchDirectoryPanel(LeftSearchDirectoryPanel leftSearchDirectoryPanel) {
+        this.leftSearchDirectoryPanel = leftSearchDirectoryPanel;
+    }
 }

@@ -2,6 +2,8 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * this class is in charge to Show the selected images and contain the operation for the same
@@ -22,7 +24,7 @@ public class RightPanelViewer extends JPanel {
     private JLabel imageWidthLabel;
     private JLabel imageExtensionLabel;
     private JScrollPane scrollPaneImage;
-
+    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /**
      * Constructor load the methods
@@ -49,7 +51,6 @@ public class RightPanelViewer extends JPanel {
         imageIcon = new ImageIcon(getClass().getResource("../img/IMAGO.jpg"));
         jlabel = new JLabel("");
         jlabel.setIcon(imageIcon);
-
         scrollPaneImage = new JScrollPane(jlabel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -75,7 +76,6 @@ public class RightPanelViewer extends JPanel {
      */
     public void changeImage(String imagePath) {
         this.remove(scrollPaneImage);
-        System.out.println(imagePath);
         imageIcon = new ImageIcon(imagePath);
         jlabel = new JLabel("");
         jlabel.setIcon(imageIcon);
@@ -93,19 +93,26 @@ public class RightPanelViewer extends JPanel {
      * @param imageIcon   this is an object ImageIcon that contains the values of the image
      */
     public void zoomImage(Integer sliderValue, ImageIcon imageIcon) {
-        this.remove(scrollPaneImage);
-        ImageIcon imageIcon2 =
-                new ImageIcon(imageIcon.getImage().getScaledInstance(imageIcon.getIconWidth() + sliderValue,
-                        imageIcon.getIconHeight() + sliderValue,
-                        Image.SCALE_DEFAULT));
-        jlabel = new JLabel("");
-        jlabel.setIcon(imageIcon2);
-        scrollPaneImage = new JScrollPane(jlabel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.add(scrollPaneImage, BorderLayout.CENTER);
-        this.repaint();
-        this.updateUI();
+        try {
+            this.remove(scrollPaneImage);
+            ImageIcon imageIcon2 =
+                    new ImageIcon(imageIcon.getImage().getScaledInstance(imageIcon.getIconWidth() + sliderValue,
+                            imageIcon.getIconHeight() + sliderValue,
+                            Image.SCALE_DEFAULT));
+            jlabel = new JLabel("");
+            jlabel.setIcon(imageIcon2);
+            scrollPaneImage = new JScrollPane(jlabel,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scrollPaneImage, BorderLayout.CENTER);
+            this.repaint();
+            this.updateUI();
+
+        } catch (Exception e) {
+            LOGGER.setLevel(Level.WARNING);
+            LOGGER.warning("" + e);
+        }
+
     }
 
     /**
@@ -117,14 +124,11 @@ public class RightPanelViewer extends JPanel {
         return imageIcon;
     }
 
+    /**
+     * change the value of the slider
+     */
     public void changeSliderValue() {
-        System.out.println("change in the Rigth Panel");
         rigthToolBar.setSlider();
-    }
-
-    public int getWithPanel() {
-        System.out.println(this.getWidth());
-        return this.getWidth();
     }
 
 }
